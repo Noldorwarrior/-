@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЦПИКП — НИЯУ МИФИ | Презентация ректору</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--navy:#060E1F;--navy-l:#0C1833;--blue:#003DA5;--blue-l:#2775E8;--gold:#E8A817;--gold-l:#FFD166;--white:#EDF2F7;--muted:#7B8FAE;--card:rgba(12,24,51,.72);--card-b:rgba(255,255,255,.04);--green:#10B981;--red:#EF4444;--teal:#06B6D4;--purple:#8B5CF6}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow:hidden;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow:hidden;height:100vh;width:100vw}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(0,61,165,.08),transparent),radial-gradient(ellipse 60% 50% at 80% 90%,rgba(232,168,23,.04),transparent);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+h1,h2,h3,.metric-val{font-family:'Playfair Display',serif}
+::selection{background:rgba(39,117,232,.4);color:#fff}
+.deck{position:relative;width:100vw;height:100vh}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:56px 72px 72px;opacity:0;transform:scale(.97) translateY(20px);transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.slide.active{opacity:1;transform:scale(1) translateY(0);pointer-events:auto;z-index:10}
+.slide.exit-left{opacity:0;transform:scale(.97) translateX(-40px)}
+.slide.exit-right{opacity:0;transform:scale(.97) translateX(40px)}
+.progress-wrap{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.04);z-index:999}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue-l),var(--gold));transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px rgba(39,117,232,.4)}
+.chrome-top{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:998;pointer-events:none}
+.logo{font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;font-weight:600;opacity:.7}
+.slide-counter{font-size:12px;color:var(--muted);font-weight:300;letter-spacing:1.5px;font-variant-numeric:tabular-nums}
+.nav-wrap{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;z-index:999}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:all .35s ease}
+.nav-dot:hover{background:rgba(255,255,255,.25)}
+.nav-dot.active{background:var(--gold);border-color:var(--gold);transform:scale(1.4);box-shadow:0 0 8px rgba(232,168,23,.3)}
+.nav-btn{position:fixed;bottom:24px;z-index:999;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:var(--white);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;backdrop-filter:blur(8px)}
+.nav-btn:hover{background:var(--blue);border-color:var(--blue);transform:scale(1.05)}
+.nav-btn.l{left:28px}.nav-btn.r{right:28px}
+.metrics{display:flex;gap:20px;flex-wrap:wrap;margin:24px 0;position:relative;z-index:20;overflow:visible}
+.metric{background:var(--card);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px 24px;flex:1;min-width:140px;position:relative;overflow:visible;transition:transform .3s,box-shadow .3s}
+.metric:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:16px 16px 0 0}
+.metric.bl::before{background:linear-gradient(90deg,var(--blue),var(--blue-l))}
+.metric.gd::before{background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.metric.gn::before{background:linear-gradient(90deg,var(--green),#34D399)}
+.metric.tl::before{background:linear-gradient(90deg,var(--teal),#22D3EE)}
+.metric.rd::before{background:linear-gradient(90deg,var(--red),#F87171)}
+.metric.pp::before{background:linear-gradient(90deg,var(--purple),#A78BFA)}
+.metric-val{font-size:32px;font-weight:700;line-height:1.1;background:linear-gradient(135deg,var(--white),rgba(255,255,255,.8));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.metric-label{font-size:11px;color:var(--muted);margin-top:6px;font-weight:400;text-transform:uppercase;letter-spacing:.6px;line-height:1.4}
+/* Tooltips */
+.has-tip{position:relative;cursor:help;border-bottom:1px dotted rgba(255,255,255,.15)}
+.has-tip::after{content:attr(data-tip);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) scale(.95);background:rgba(6,14,31,.96);color:var(--white);font-size:11px;font-weight:400;line-height:1.5;letter-spacing:0;text-transform:none;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);white-space:normal;width:280px;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5);text-align:left}
+.has-tip:hover::after{opacity:1;transform:translateX(-50%) scale(1)}
+.has-tip::before{content:'';position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:rgba(6,14,31,.96);opacity:0;transition:opacity .25s;z-index:101;pointer-events:none}
+.has-tip:hover::before{opacity:1}
+.tip-icon{display:inline-block;width:13px;height:13px;line-height:13px;text-align:center;border-radius:50%;background:rgba(255,255,255,.06);color:var(--muted);font-size:8px;font-weight:700;margin-left:4px;vertical-align:middle;font-style:normal;letter-spacing:0;text-transform:none}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:rgba(0,61,165,.2);color:var(--gold);padding:10px 14px;text-align:left;font-weight:600;border-bottom:1px solid rgba(39,117,232,.3);font-size:11px;text-transform:uppercase;letter-spacing:.7px}
+.tbl td{padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.85);transition:background .2s}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.tbl .hl{color:var(--gold);font-weight:600}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:16px 0}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin:16px 0}
+.card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:22px;backdrop-filter:blur(12px);transition:transform .3s,border-color .3s}
+.card:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.1)}
+.card h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold-l);margin-bottom:8px;font-weight:600}
+.card p,.card li{font-size:13px;color:var(--muted);line-height:1.65}
+.card ul{list-style:none;padding:0}.card li{padding:3px 0}
+.card li::before{content:'→ ';color:var(--blue-l);font-weight:600}
+.s-title{font-size:42px;font-weight:700;line-height:1.12;margin-bottom:6px;letter-spacing:-.5px}
+.s-sub{font-size:16px;color:var(--muted);font-weight:300;margin-bottom:24px;max-width:680px;line-height:1.6}
+.accent{color:var(--gold)}
+.blue{color:var(--blue-l)}
+.title-slide{text-align:center;justify-content:center;align-items:center}
+.title-slide h1{font-size:80px;font-weight:800;letter-spacing:-2px;margin-bottom:12px;background:linear-gradient(135deg,var(--white),rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.title-slide .sub{font-size:20px;color:var(--muted);font-weight:300;margin-bottom:36px;max-width:600px;line-height:1.6}
+.tag{display:inline-block;padding:10px 28px;border:1px solid rgba(232,168,23,.4);border-radius:40px;color:var(--gold);font-size:12px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;backdrop-filter:blur(8px);background:rgba(232,168,23,.05)}
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px)}
+.orb-blue{background:rgba(0,61,165,.12)}.orb-gold{background:rgba(232,168,23,.06)}
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}
+.active .fade-up{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}.d6{transition-delay:.6s}
+.chart-wrap{background:var(--card);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,.05);margin:12px 0}
+.chart-wrap canvas{max-height:260px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.5px}
+.badge-gd{background:rgba(232,168,23,.12);color:var(--gold)}.badge-bl{background:rgba(39,117,232,.12);color:var(--blue-l)}
+.badge-gn{background:rgba(16,185,129,.12);color:var(--green)}.badge-rd{background:rgba(239,68,68,.12);color:var(--red)}
+.toggle-group{display:flex;gap:2px;background:rgba(255,255,255,.05);border-radius:8px;padding:2px;margin:8px 0;width:fit-content}
+.toggle-btn{padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif}
+.toggle-btn.active{background:var(--blue);color:var(--white);box-shadow:0 2px 8px rgba(0,61,165,.3)}
+.risk-cell{width:100%;aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--white);transition:transform .2s;cursor:pointer}
+.risk-cell:hover{transform:scale(1.15)}
+.footnote{font-size:10px;color:rgba(123,143,174,.6);margin-top:8px;font-style:italic}
+/* NPV Heatmap */
+.npv-heatmap{display:grid;grid-template-columns:auto repeat(4,1fr);gap:2px;font-size:11px;margin:8px 0}
+.npv-heatmap .hdr{color:var(--gold);font-weight:600;padding:6px 8px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:.3px}
+.npv-heatmap .row-label{color:var(--muted);padding:6px 8px;font-weight:500;display:flex;align-items:center}
+.npv-heatmap .cell{border-radius:6px;padding:8px;text-align:center;font-weight:600;transition:transform .2s,box-shadow .2s;cursor:default}
+.npv-heatmap .cell:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(0,0,0,.4)}
+@media(max-width:960px){.slide{padding:28px 20px 60px}.s-title{font-size:28px}.grid-2,.grid-3{grid-template-columns:1fr}.metric-val{font-size:26px}.title-slide h1{font-size:44px}.metrics{gap:12px}.metric{padding:14px 16px;min-width:120px}}
+.kbd-hint{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);font-size:10px;color:rgba(255,255,255,.15);letter-spacing:1px;z-index:999;opacity:1;transition:opacity 1s;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="progress"></div></div>
+<div class="chrome-top">
+  <div class="logo">НИЯУ МИФИ · ЦПИКП</div>
+  <div class="slide-counter" id="counter">01 / 10</div>
+</div>
+<div class="nav-wrap" id="nav"></div>
+<button class="nav-btn l" onclick="prev()" aria-label="Назад">‹</button>
+<button class="nav-btn r" onclick="next()" aria-label="Вперёд">›</button>
+<div class="kbd-hint" id="kbdHint">← → для навигации</div>
+
+<div class="deck" id="deck">
+
+<!-- ═══ SLIDE 1: TITLE ═══ -->
+<div class="slide title-slide active" data-n="1">
+  <div class="orb orb-blue" style="width:600px;height:600px;top:-250px;left:15%"></div>
+  <div class="orb orb-gold" style="width:400px;height:400px;bottom:-200px;right:10%"></div>
+  <h1 class="fade-up">ЦПИКП</h1>
+  <div class="sub fade-up d1">Центр привлечения инвестиций<br>и&nbsp;корпоративного партнёрства</div>
+  <div class="sub fade-up d2" style="font-size:14px;color:var(--muted);margin-bottom:28px">Аналитическая записка ректору НИЯУ&nbsp;МИФИ В.И.&nbsp;Шевченко · Март 2026</div>
+  <div class="fade-up d3"><span class="tag">ООО · 100% МИФИ · 5 блоков · 25→35 чел. · 10 лет</span></div>
+  <div class="metrics fade-up d4" style="max-width:1000px;margin-top:32px">
+    <div class="metric gd"><div class="metric-val" data-count="38.4" data-suffix=" млрд">38,4 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Total Contract Value — полная стоимость всех заключённых контрактов (все годы исполнения). Показывает объём координационного эффекта ЦПИКП.">TCV за 10 лет<i class="tip-icon">?</i></span></div></div>
+    <div class="metric gn"><div class="metric-val" data-count="7.66" data-suffix=" млрд">7,66 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Net Present Value — чистая приведённая стоимость потока Cash-in за вычетом затрат, дисконтированная по ставке 12% годовых.">NPV (CI, r=12%)<i class="tip-icon">?</i></span></div></div>
+    <div class="metric tl"><div class="metric-val">15–20 мес.</div><div class="metric-label"><span class="has-tip" data-tip="Срок окупаемости — период, за который кумулятивный Cash-in превышает кумулятивные затраты ЦПИКП.">Break-even<i class="tip-icon">?</i></span></div></div>
+    <div class="metric bl"><div class="metric-val">7,3x / 3,9x</div><div class="metric-label"><span class="has-tip" data-tip="Мультипликатор — сколько рублей привлечённых средств приходится на 1 рубль затрат. TCV-basis (7,3x) и Cash-in-basis (3,9x).">Мульт. TCV / Cash-in<i class="tip-icon">?</i></span></div></div>
+    <div class="metric pp"><div class="metric-val">626% / 289%</div><div class="metric-label"><span class="has-tip" data-tip="Return on Investment — рентабельность инвестиций. ROI = (Привлечение − Затраты) / Затраты × 100%. TCV-basis и Cash-in-basis.">ROI TCV / Cash-in<i class="tip-icon">?</i></span></div></div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 2: ПРОБЛЕМА ═══ -->
+<div class="slide" data-n="2">
+  <div class="orb orb-blue" style="width:400px;height:400px;top:-100px;right:5%"></div>
+  <h2 class="s-title fade-up">Проблема: <span class="accent">фрагментация без координации</span></h2>
+  <p class="s-sub fade-up d1">508 подразделений. 8 работают с бизнесом. 0 координации. Ни одно не способно обработать комплексный запрос корпорации.</p>
+  <div class="metrics fade-up d2">
+    <div class="metric bl"><div class="metric-val" data-count="508">508</div><div class="metric-label"><span class="has-tip" data-tip="508 структурных подразделений НИЯУ МИФИ по состоянию на 01.01.2026.">подразделений<i class="tip-icon">?</i></span></div></div>
+    <div class="metric gd"><div class="metric-val" data-count="8">8</div><div class="metric-label"><span class="has-tip" data-tip="8 подразделений с частичными функциями взаимодействия с бизнесом (ЦТТ, УИТР, ДРП, ФПК и др.).">с функцией бизнеса<i class="tip-icon">?</i></span></div></div>
+    <div class="metric rd"><div class="metric-val" style="color:var(--red)">0</div><div class="metric-label"><span class="has-tip" data-tip="Ни одно подразделение не выполняет функцию единого координатора для работы с бизнесом и инвесторами.">координаторов<i class="tip-icon">?</i></span></div></div>
+    <div class="metric tl"><div class="metric-val">~3,2 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Объём внебюджетных потоков МИФИ, которые войдут в зону ответственности ЦПИКП (~2,8–3,2 млрд руб./год).">целевой периметр<i class="tip-icon">?</i></span></div></div>
+  </div>
+  <div class="grid-2 fade-up d3">
+    <div class="card"><h3>Пять типов системных потерь</h3><ul>
+      <li>Заказы на НИОКР — обработка 2–4 недели вместо 2 дней</li>
+      <li>Инвестиции — функция не покрыта ни одним подразделением</li>
+      <li>Корпоративное ДПО — нет B2B-координатора</li>
+      <li>Фандрайзинг — потенциал целевых капиталов не реализован</li>
+      <li>Нет KAM для стратегических партнёров, включая Росатом</li>
+    </ul></div>
+    <div class="card"><h3>Бюджет МИФИ >14 млрд/год</h3><ul>
+      <li>Субсидия на госзадание: >5,0 млрд</li>
+      <li>НИОКР Росатом: ~2,0 млрд (через ЦУП)</li>
+      <li>НИОКР частный сектор: ~0,4 млрд <span class="badge badge-rd">фрагм.</span></li>
+      <li>Платное образование: ~1,5–2,0 млрд</li>
+      <li>Гранты: ~1,5–2,5 млрд <span class="badge badge-rd">фрагм.</span></li>
+      <li>ДПО, лицензии, прочие: ~2,0 млрд</li>
+    </ul></div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 3: БЕНЧМАРК ═══ -->
+<div class="slide" data-n="3">
+  <h2 class="s-title fade-up">Бенчмарк: <span class="accent">лучшие практики</span></h2>
+  <p class="s-sub fade-up d1">Ведущие технические университеты активно развивают координирующие структуры. МИФИ — один из немногих без аналога.</p>
+  <div class="grid-3 fade-up d2">
+    <div class="card"><h3>MIT ILP</h3><p style="color:var(--white);font-weight:500">300+ партнёров, ~$175 млн/год</p><p>Industry Liaison Program (с 1948 г.)</p></div>
+    <div class="card"><h3>Stanford OTL</h3><p style="color:var(--white);font-weight:500">>$100 млн/год лицензирование</p><p>Office of Technology Licensing</p></div>
+    <div class="card" style="border:1px solid rgba(232,168,23,.2)"><h3 style="color:var(--gold)">ETH Zurich Transfer</h3><p style="color:var(--white);font-weight:500">>600 спин-оффов, ~30 чел.</p><p>Внутреннее подразделение техвуза — наиболее релевантный аналог</p></div>
+    <div class="card"><h3>НИУ ВШЭ</h3><p style="color:var(--white);font-weight:500">>4 млрд руб., эндаумент 1,77 млрд</p><p>ФЦК: координация всего фандрайзинга</p></div>
+    <div class="card"><h3>МФТИ</h3><p style="color:var(--white);font-weight:500">36 стартапов, ~500 млн/год</p><p>ЦТТ + акселератор + спин-оффы</p></div>
+    <div class="card"><h3>Сколтех</h3><p style="color:var(--white);font-weight:500">>100 патентов, фонд ~$30 млн</p><p>Центр инноваций + VC + CVC</p></div>
+  </div>
+  <div class="fade-up d3" style="margin-top:8px">
+    <div class="grid-3">
+      <div class="card"><h3>Imperial College</h3><p style="color:var(--white);font-weight:500">>£200 млн/год</p><p>Enterprise Division</p></div>
+      <div class="card"><h3>ИТМО</h3><p style="color:var(--white);font-weight:500">Институт трансфера</p><p>Акселератор + патентный портфель</p></div>
+      <div class="card" style="background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2)"><h3 style="color:var(--red)">МИФИ — ?</h3><p style="color:var(--white);font-weight:500">Координирующей структуры нет</p><p>508 подразд., 0 координации</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 4: РЕШЕНИЕ ═══ -->
+<div class="slide" data-n="4">
+  <h2 class="s-title fade-up">Решение: <span class="accent">ЦПИКП</span> (ООО, 100% МИФИ)</h2>
+  <p class="s-sub fade-up d1">Единая точка входа для бизнеса. 5 функциональных блоков. Прямое подчинение ректору. Запуск за 3–6 мес.</p>
+  <div class="grid-2 fade-up d2">
+    <div>
+      <table class="tbl">
+        <tr><th>Блок</th><th>Штат</th><th>Функция</th></tr>
+        <tr><td>Руководство</td><td>3</td><td>Директор G1 + 2 зама G2</td></tr>
+        <tr><td class="hl">1. Инвестиции</td><td>5</td><td>VC/CVC, гранты, спин-оффы</td></tr>
+        <tr><td class="hl">2. Фронт-офис</td><td>5</td><td>CRM, маршрутизация, SLA</td></tr>
+        <tr><td class="hl">3. KAM-партнёрства</td><td>6</td><td>Стратег. партнёры, Росатом (кат. S)</td></tr>
+        <tr><td class="hl">4. Аналитика/CRM</td><td>4</td><td>CRM, BI, веб-портал, дашборды</td></tr>
+        <tr><td class="hl">5. Юридический</td><td>2</td><td>Сделки, IP, комплаенс, ФЗ-223</td></tr>
+        <tr><td style="color:var(--gold);font-weight:700">ИТОГО Фаза 1</td><td style="color:var(--gold);font-weight:700">25</td><td></td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:14px"><h3>Почему ООО, а не Департамент?</h3><ul>
+        <li>Запуск за <b style="color:var(--gold)">3–6 мес.</b> (vs 6–12 у Департамента)</li>
+        <li>KPI-вестинг, рыночные оклады без тарифных сеток</li>
+        <li>Инвестиционный фонд 2/20, спин-оффы, carried interest</li>
+        <li>Минимум организационного сопротивления</li>
+        <li>Эволюция → Департамент через 24–36 мес. по триггерам</li>
+      </ul></div>
+      <div class="card"><h3>Росатом — категория S</h3><p>ЦПИКП = стратегическое развитие новых направлений. ЦУП = операционное управление текущих программ. Выделенный KAM Росатом с Фазы 2. НС с представителем Росатома с Мес. 1.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 5: ФИНАНСЫ ═══ -->
+<div class="slide" data-n="5">
+  <h2 class="s-title fade-up">Финансовое обоснование: <span class="accent">10 лет, 4 сценария</span></h2>
+  <div class="metrics fade-up d1">
+    <div class="metric gd"><div class="metric-val" data-count="38.4" data-suffix=" млрд">38,4 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Total Contract Value — полная стоимость всех контрактов за 10 лет в базовом сценарии. Включает НИОКР, ДПО, гранты, лицензирование.">TCV 10 лет (базовый)<i class="tip-icon">?</i></span></div></div>
+    <div class="metric tl"><div class="metric-val" data-count="20.6" data-suffix=" млрд">20,6 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Cash-in — фактически поступившие денежные средства. Рассчитан по ставкам: группа А 60%, Б 45%, В 20% (ср.взв. ~54% от TCV).">Cash-in 10 лет<i class="tip-icon">?</i></span></div></div>
+    <div class="metric gn"><div class="metric-val" data-count="7.66" data-suffix=" млрд">7,66 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Net Present Value — чистая приведённая стоимость потока Cash-in за вычетом затрат, дисконтированная по ставке 12% годовых.">NPV (CI, r=12%)<i class="tip-icon">?</i></span></div></div>
+    <div class="metric bl"><div class="metric-val">7,3x / 3,9x</div><div class="metric-label"><span class="has-tip" data-tip="Мультипликатор — отношение привлечённых средств к затратам. 7,3x по TCV (контрактная стоимость) и 3,9x по Cash-in (поступления).">Мульт. TCV / CI<i class="tip-icon">?</i></span></div></div>
+  </div>
+  <div class="grid-2 fade-up d2">
+    <div>
+      <div class="toggle-group" id="chartToggle">
+        <button class="toggle-btn active" onclick="toggleChart('tcv')">TCV + Cash-in</button>
+        <button class="toggle-btn" onclick="toggleChart('scenarios')">Сценарии TCV</button>
+        <button class="toggle-btn" onclick="toggleChart('npv')">NPV Heatmap</button>
+      </div>
+      <div class="chart-wrap" id="chartWrap1"><canvas id="chartTCV"></canvas></div>
+      <div class="chart-wrap" id="chartWrap2" style="display:none"><canvas id="chartScenarios"></canvas></div>
+      <div id="npvHeatmapWrap" style="display:none">
+        <div class="card" style="padding:20px">
+          <h3 style="font-size:15px;margin-bottom:14px">Чувствительность NPV к ставке дисконтирования</h3>
+          <table class="tbl" style="margin:0">
+            <tr><th>Ставка (r)</th><th><span class="has-tip" data-tip="NPV рассчитан как дисконтированный поток Cash-in минус дисконтированные затраты ЦПИКП">NPV (Cash-in − Затраты)<i class="tip-icon">?</i></span></th><th><span class="has-tip" data-tip="Справочная метрика: NPV от полной контрактной стоимости. Показывает координационный эффект">NPV (TCV − Затраты)<i class="tip-icon">?</i></span></th><th style="width:30%">Комментарий</th></tr>
+            <tr style="background:rgba(16,185,129,.08)"><td>8%</td><td style="color:#34D399;font-weight:700;font-size:16px">9,46 млрд</td><td style="color:#34D399;font-weight:600">21,54 млрд</td><td style="font-size:11px;color:var(--muted)">Положительный при любом сценарии</td></tr>
+            <tr style="background:rgba(39,117,232,.1)"><td class="hl">12% (базовая)</td><td style="color:var(--blue-l);font-weight:700;font-size:16px">7,66 млрд</td><td style="color:var(--blue-l);font-weight:600">16,52 млрд</td><td style="font-size:11px;color:var(--muted)">Базовый сценарий модели</td></tr>
+            <tr style="background:rgba(245,158,11,.06)"><td>15%</td><td style="color:#F59E0B;font-weight:700;font-size:16px">6,60 млрд</td><td style="color:#F59E0B;font-weight:600">14,23 млрд</td><td style="font-size:11px;color:var(--muted)">Положительный, запас прочности</td></tr>
+            <tr style="background:rgba(239,68,68,.06)"><td style="color:var(--red)">21% (стресс)</td><td style="color:var(--red);font-weight:700;font-size:16px">5,04 млрд</td><td style="color:var(--red);font-weight:600">10,83 млрд</td><td style="font-size:11px;color:var(--muted)">Даже при ключевой ЦБ — положительный</td></tr>
+          </table>
+          <div style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap">
+            <div class="metric gn" style="padding:10px 16px;flex:1;min-width:180px"><div class="metric-val" style="font-size:20px">9,46 → 5,04</div><div class="metric-label">NPV (CI) остаётся >5 млрд</div></div>
+            <div class="metric gd" style="padding:10px 16px;flex:1;min-width:180px"><div class="metric-val" style="font-size:20px">Монотонность ✓</div><div class="metric-label">NPV убывает при росте r</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="footnote">Cash-in: А=60%, Б=45%, В=20% (ср.взв. ~54%). Break-even: 15–20 мес. Налоги ООО (~252 млн) не вкл. в базовый NPV.</div>
+    </div>
+    <div>
+      <table class="tbl" style="margin-bottom:12px">
+        <tr><th>Сценарий</th><th><span class="has-tip" data-tip="Total Contract Value — полная стоимость контрактов за 10 лет">TCV 10л<i class="tip-icon">?</i></span></th><th><span class="has-tip" data-tip="Cash-in — фактические поступления. Ставки: А=60%, Б=45%, В=20%">CI 10л<i class="tip-icon">?</i></span></th><th><span class="has-tip" data-tip="Net Present Value — чистая приведённая стоимость Cash-in минус затраты при r=12%">NPV<i class="tip-icon">?</i></span></th></tr>
+        <tr><td>Пессимистичный</td><td>26,8</td><td>14,4</td><td>4,6</td></tr>
+        <tr><td class="hl">Базовый</td><td class="hl">38,4</td><td class="hl">20,6</td><td class="hl">7,66</td></tr>
+        <tr><td>Оптимистичный</td><td>52,5</td><td>28,2</td><td>11,5</td></tr>
+        <tr><td>Санкц. стресс</td><td>32,6</td><td>17,5</td><td>6,1</td></tr>
+      </table>
+      <table class="tbl">
+        <tr><th>Метрика</th><th>TCV</th><th>Cash-in</th></tr>
+        <tr><td><span class="has-tip" data-tip="Отношение привлечённых средств к совокупным затратам ЦПИКП за 10 лет">Мультипликатор<i class="tip-icon">?</i></span></td><td class="hl">7,3x</td><td class="hl">3,9x</td></tr>
+        <tr><td><span class="has-tip" data-tip="Return on Investment = (Привлечение − Затраты) / Затраты × 100%">ROI кумулят.<i class="tip-icon">?</i></span></td><td class="hl">626%</td><td class="hl">289%</td></tr>
+        <tr><td><span class="has-tip" data-tip="Чистая приведённая стоимость при ставке дисконтирования 12% годовых">NPV (r=12%)<i class="tip-icon">?</i></span></td><td>16,52 млрд</td><td>7,66 млрд</td></tr>
+        <tr><td style="color:var(--muted);font-size:11px">с налогами ООО</td><td style="font-size:11px;color:var(--muted)">~6,9x / 593%</td><td style="font-size:11px;color:var(--muted)">~7,3 млрд</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ SLIDE 6: КАДРЫ ═══ -->
+<div class="slide" data-n="6">
+  <h2 class="s-title fade-up">Кадровая модель: <span class="accent">грейды и KPI-вестинг</span></h2>
+  <p class="s-sub fade-up d1">5 грейдов (G1–G5). Фикс всегда растёт. Переменная — через множитель сверх фикса.</p>
+  <div class="grid-2 fade-up d2">
+    <div>
+      <table class="tbl" style="margin-bottom:14px">
+        <tr><th>Грейд</th><th><span class="has-tip" data-tip="Ежегодная индексация фиксированной части зарплаты. Зависит от грейда должности">Инд./год<i class="tip-icon">?</i></span></th><th>Должности</th><th>Фикс Г1 тыс./мес</th></tr>
+        <tr><td class="hl">G1 (+12%)</td><td>+12%</td><td>Директор</td><td>667</td></tr>
+        <tr><td>G2 (+10%)</td><td>+10%</td><td>Замы</td><td>433–480</td></tr>
+        <tr><td>G3 (+9%)</td><td>+9%</td><td>Рук. блоков, ст. юрист</td><td>307–387</td></tr>
+        <tr><td>G4 (+8,5%)</td><td>+8,5%</td><td>Менеджеры, KAM</td><td>227–280</td></tr>
+        <tr><td>G5 (+8%)</td><td>+8%</td><td>Специалисты, аналитики</td><td>167–240</td></tr>
+      </table>
+      <table class="tbl">
+        <tr><th>Год</th><th>Фикс/Перем</th><th><span class="has-tip" data-tip="Множитель переменной части к фиксу. ×0,25 = бонус 25% от фикса при 100% KPI">Множит.<i class="tip-icon">?</i></span></th><th>Механизм</th></tr>
+        <tr><td>Год 1</td><td>80/20</td><td>×0,25</td><td><span class="badge badge-gn">Защита запуска</span></td></tr>
+        <tr><td>Год 2</td><td>60/40</td><td>×0,67</td><td><span class="badge badge-bl">Pipeline создан</span></td></tr>
+        <tr><td class="hl">Год 3+</td><td class="hl">40/60</td><td class="hl">×1,50</td><td><span class="badge badge-gd">Целевая модель</span></td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="chart-wrap"><canvas id="chartFOT"></canvas></div>
+      <div class="metrics" style="margin-top:10px">
+        <div class="metric gd" style="padding:14px 18px"><div class="metric-val" style="font-size:24px">4,93 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Фонд оплаты труда — суммарные расходы на зарплаты (с начислениями 30,2%) всех сотрудников ЦПИКП за 10 лет.">Кумулятив ФОТ 10 лет<i class="tip-icon">?</i></span></div></div>
+        <div class="metric gn" style="padding:14px 18px"><div class="metric-val" style="font-size:24px">5,28 млрд</div><div class="metric-label"><span class="has-tip" data-tip="ФОТ + OPEX (операционные расходы: CRM, офис, командировки, IT, маркетинг, юр. услуги, резерв) за 10 лет.">Совокупные затраты<i class="tip-icon">?</i></span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 7: ХЕДЖИРОВАНИЕ ═══ -->
+<div class="slide" data-n="7">
+  <h2 class="s-title fade-up">Встроенные механизмы <span class="accent">хеджирования</span></h2>
+  <p class="s-sub fade-up d1">При невыполнении KPI бюджет автоматически снижается. Без управленческих решений.</p>
+  <div class="metrics fade-up d2">
+    <div class="metric gn"><div class="metric-val">−17%</div><div class="metric-label"><span class="has-tip" data-tip="Хедж-сценарий: при полном невыполнении KPI выплачивается только фиксированная часть (80% от базы в Год 1). Экономия −17%.">ФОТ при 0% KPI (Год 1)<i class="tip-icon">?</i></span></div></div>
+    <div class="metric gd"><div class="metric-val">−60%</div><div class="metric-label"><span class="has-tip" data-tip="При целевой модели 40/60 невыполнение KPI снижает ФОТ на 60% — только фиксированная часть (40% от целевого дохода).">ФОТ при 0% KPI (Год 3+)<i class="tip-icon">?</i></span></div></div>
+    <div class="metric tl"><div class="metric-val">Cap 200%</div><div class="metric-label"><span class="has-tip" data-tip="Cap 200% — потолок KPI-бонуса. При перевыполнении &gt;200% бонус не растёт. Нефинансовые стимулы: карьерный рост, портфель, НС.">Максимальный бонус<i class="tip-icon">?</i></span></div></div>
+    <div class="metric pp"><div class="metric-val">Kill Switch</div><div class="metric-label"><span class="has-tip" data-tip="Kill Switch — если к 18-му месяцу ROI по Cash-in &lt; 50% от плана, запускается процедура ликвидации ООО. Макс. потери ~284 млн.">Мес. 18 · ROI &lt;50%<i class="tip-icon">?</i></span></div></div>
+  </div>
+  <div class="grid-2 fade-up d3">
+    <div class="chart-wrap"><canvas id="chartHedge"></canvas></div>
+    <div>
+      <div class="card" style="margin-bottom:14px"><h3>Контрольные точки</h3><ul>
+        <li><b style="color:var(--teal)">Gate 0.5</b> (мес. 6): промежуточный dashboard ректору</li>
+        <li><b style="color:var(--blue-l)">T1</b> (мес. 12): полный годовой отчёт ректору</li>
+        <li><b style="color:var(--gold)">T2</b> (мес. 18): Kill Switch — ROI &lt;50% → ликвидация ООО</li>
+        <li><b style="color:var(--green)">T3</b> (мес. 24): решение об интеграции ООО → Департамент</li>
+        <li><b style="color:var(--purple)">T4</b> (мес. 36): оценка полной модели</li>
+      </ul></div>
+      <div class="card"><h3>Бюджетный коридор (Год 1)</h3>
+        <table class="tbl" style="margin:8px 0">
+          <tr><td>0% KPI</td><td class="hl" style="color:var(--green)">~140 млн</td><td><span class="badge badge-gn">хедж</span></td></tr>
+          <tr><td>100% KPI</td><td class="hl">~168 млн</td><td><span class="badge badge-bl">план</span></td></tr>
+          <tr><td>200% KPI</td><td class="hl" style="color:var(--gold)">~221 млн</td><td><span class="badge badge-gd">cap</span></td></tr>
+        </table>
+        <div class="footnote">Cap 200%: нефинансовые стимулы для сверхрезультативных — карьерный рост (G4→G3), расширение портфеля, участие в НС.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 8: ДОРОЖНАЯ КАРТА ═══ -->
+<div class="slide" data-n="8">
+  <h2 class="s-title fade-up">Дорожная карта: <span class="accent">3 фазы, 10 лет</span></h2>
+  <div class="grid-3 fade-up d1" style="margin-top:12px">
+    <div class="card" style="border-left:3px solid var(--blue-l)">
+      <h3 style="color:var(--blue-l)">Фаза 1: Запуск</h3>
+      <p style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Год 1–2 · 25 чел. · 80/20→60/40</p>
+      <ul><li>Волна 1–3: набор за 9 мес.</li><li>CRM MVP (Bitrix24/amoCRM) к Мес. 4</li><li>Pipeline >500 млн TCV</li><li>Первый целевой капитал</li><li>Триггер → Ф2: ROI >150%</li></ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--gold)">
+      <h3>Фаза 2: Масштабирование</h3>
+      <p style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Год 3–5 · 32 чел. · 40/60 целевая</p>
+      <ul><li>+7 чел. (KAM Росатом, ДПО, гранты, BI)</li><li>Множитель ×1,50 (целевая модель)</li><li>Инвестфонд: структурирование ИТ (ФЗ-335)</li><li>TCV >2 900 млн/год к Году 3</li><li>Триггер → Ф3: ROI >300%</li></ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--green)">
+      <h3 style="color:var(--green)">Фаза 3: Зрелость</h3>
+      <p style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:6px">Год 6–10 · 35 чел. · спин-оффы</p>
+      <ul><li>+3 чел. (инвестфонд, IP, межд.)</li><li>Фонд 2/20: 2-й closing, >500 млн</li><li>Первые выходы из спин-оффов</li><li>TCV >5 600 млн/год</li><li>Эволюция → Департамент / АО-холдинг</li></ul>
+    </div>
+  </div>
+  <div class="chart-wrap fade-up d2" style="margin-top:10px"><canvas id="chartRoadmap"></canvas></div>
+</div>
+
+<!-- ═══ SLIDE 9: РИСКИ ═══ -->
+<div class="slide" data-n="9">
+  <h2 class="s-title fade-up">Риски и синергия: <span class="accent">хедж + Эндаумент</span></h2>
+  <div class="grid-2 fade-up d1">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <h3>Карта рисков</h3>
+        <table class="tbl" style="font-size:12px">
+          <tr><th>Риск</th><th>P</th><th>I</th><th>Митигация</th></tr>
+          <tr><td>Сопротивление подразделений</td><td style="color:var(--gold)">3</td><td style="color:var(--gold)">4</td><td>Координация, не поглощение</td></tr>
+          <tr><td>Конфликт с Эндаумент-фондом</td><td style="color:var(--gold)">3</td><td>3</td><td>Совместная CRM, SLA</td></tr>
+          <tr><td style="color:var(--red)">Согласование Росатом (Gate 0)</td><td style="color:var(--red)">3</td><td style="color:var(--red)">5</td><td>Pre-consultation + НС с ГК</td></tr>
+          <tr><td>Санкционные ограничения</td><td>2</td><td style="color:var(--gold)">4</td><td>Межд. &lt;10% TCV, стресс ×0,85</td></tr>
+          <tr><td>Утечка ключевых кадров</td><td>2</td><td>3</td><td>KPI-вестинг, рыночные оклады</td></tr>
+          <tr><td>Невыполнение KPI</td><td>2</td><td>2</td><td>Авто-хедж ФОТ, Kill Switch</td></tr>
+        </table>
+      </div>
+      <div class="card"><h3 style="color:var(--teal)">Конкурентное давление</h3><p>МФТИ, Сколтех, ИТМО активно развивают координирующие структуры (Приоритет-2030). Окно возможностей для МИФИ сужается — дополнительный аргумент за скорейший запуск.</p></div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:14px"><h3>Синергия с Эндаумент-фондом</h3><ul>
+        <li>Совместная CRM: ЦПИКП привлекает корпорации</li>
+        <li>Эндаумент-фонд управляет целевыми капиталами</li>
+        <li>KAM инициирует именные лаборатории, стипендии, гранты</li>
+        <li>Целевые показатели: ≥1 (Г1), ≥3 (Г2), ≥5 (Г3), ≥12 (Г10)</li>
+      </ul></div>
+      <div class="card"><h3>Механизмы хеджирования</h3><ul>
+        <li><b style="color:var(--green)">Авто-снижение ФОТ</b> при невыполнении KPI (до −60% к Г3+)</li>
+        <li><b style="color:var(--gold)">Транзиция 80/20→40/60</b> — защита бюджета в Год 1</li>
+        <li><b style="color:var(--teal)">Revenue gate</b> — ×1,50 только при TCV Г2 ≥70% плана</li>
+        <li><b style="color:var(--purple)">Kill Switch T2</b> — мес. 18, ROI &lt;50% → ликвидация</li>
+      </ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 10: ЗАПРОС ═══ -->
+<div class="slide title-slide" data-n="10">
+  <div class="orb orb-blue" style="width:500px;height:500px;top:-200px;right:15%"></div>
+  <div class="orb orb-gold" style="width:300px;height:300px;bottom:-100px;left:20%"></div>
+  <h2 class="s-title fade-up" style="font-size:52px">Запрос к ректору</h2>
+  <div class="s-sub fade-up d1" style="text-align:center;max-width:680px;margin-bottom:28px">Утвердить создание ООО «ЦПИКП» (100% МИФИ) с бюджетом Года 1 ~168 млн руб. и штатом 25 чел.</div>
+  <div class="metrics fade-up d2" style="max-width:1000px">
+    <div class="metric gd"><div class="metric-val" data-count="38.4" data-suffix=" млрд">38,4 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Total Contract Value — полная стоимость всех заключённых контрактов (все годы исполнения). Показывает объём координационного эффекта ЦПИКП.">TCV за 10 лет<i class="tip-icon">?</i></span></div></div>
+    <div class="metric gn"><div class="metric-val" data-count="7.66" data-suffix=" млрд">7,66 млрд</div><div class="metric-label"><span class="has-tip" data-tip="Net Present Value — чистая приведённая стоимость потока Cash-in за вычетом затрат, дисконтированная по ставке 12% годовых.">NPV (CI, r=12%)<i class="tip-icon">?</i></span></div></div>
+    <div class="metric tl"><div class="metric-val">15–20 мес.</div><div class="metric-label"><span class="has-tip" data-tip="Срок окупаемости — период, за который кумулятивный Cash-in превышает кумулятивные затраты ЦПИКП.">Break-even<i class="tip-icon">?</i></span></div></div>
+    <div class="metric bl"><div class="metric-val">7,3x / 3,9x</div><div class="metric-label"><span class="has-tip" data-tip="Мультипликатор — отношение привлечённых средств к затратам. 7,3x по TCV (контрактная стоимость) и 3,9x по Cash-in (поступления).">Мульт. TCV / CI<i class="tip-icon">?</i></span></div></div>
+    <div class="metric pp"><div class="metric-val">626% / 289%</div><div class="metric-label"><span class="has-tip" data-tip="Return on Investment — рентабельность. 626% по TCV (контрактная стоимость) и 289% по Cash-in (фактические поступления).">ROI TCV / CI<i class="tip-icon">?</i></span></div></div>
+  </div>
+  <div class="fade-up d3" style="margin-top:24px;text-align:center">
+    <span class="tag" style="font-size:13px;padding:12px 32px">Хедж 0% KPI: ~140 млн · Cap 200% · Kill Switch: мес. 18 · Gate 0: согласие Росатома</span>
+  </div>
+  <div class="fade-up d4" style="margin-top:20px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+    <div style="background:rgba(0,61,165,.15);border:1px solid rgba(39,117,232,.3);border-radius:10px;padding:12px 18px;text-align:center;min-width:150px">
+      <div style="font-size:11px;color:var(--blue-l);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Шаг 1</div>
+      <div style="font-size:12px;color:var(--white);margin-top:4px">Одобрить создание ООО</div>
+    </div>
+    <div style="background:rgba(232,168,23,.08);border:1px solid rgba(232,168,23,.3);border-radius:10px;padding:12px 18px;text-align:center;min-width:150px">
+      <div style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Шаг 2</div>
+      <div style="font-size:12px;color:var(--white);margin-top:4px">Назначить директора</div>
+    </div>
+    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);border-radius:10px;padding:12px 18px;text-align:center;min-width:150px">
+      <div style="font-size:11px;color:var(--green);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Шаг 3</div>
+      <div style="font-size:12px;color:var(--white);margin-top:4px">Согласовать с Росатомом (Gate&nbsp;0)</div>
+    </div>
+    <div style="background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.3);border-radius:10px;padding:12px 18px;text-align:center;min-width:150px">
+      <div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Шаг 4</div>
+      <div style="font-size:12px;color:var(--white);margin-top:4px">Pre-consultation Росатом</div>
+    </div>
+    <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.3);border-radius:10px;padding:12px 18px;text-align:center;min-width:150px">
+      <div style="font-size:11px;color:var(--purple);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Шаг 5</div>
+      <div style="font-size:12px;color:var(--white);margin-top:4px">НС (5 чел.) + Gate 0.5 / T1</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+// ─── NAVIGATION ───
+const slides=document.querySelectorAll('.slide'),nav=document.getElementById('nav'),T=slides.length;
+let cur=0,animating=false;
+for(let i=0;i<T;i++){const d=document.createElement('div');d.className='nav-dot'+(i===0?' active':'');d.onclick=()=>go(i);nav.appendChild(d)}
+
+function go(n){
+  if(n<0||n>=T||n===cur||animating)return;
+  animating=true;
+  const dir=n>cur?1:-1;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add(dir>0?'exit-left':'exit-right');
+  setTimeout(()=>{slides[cur].classList.remove('exit-left','exit-right');animating=false},550);
+  cur=n;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  document.getElementById('progress').style.width=((cur+1)/T*100)+'%';
+  document.getElementById('counter').textContent=`${String(cur+1).padStart(2,'0')} / ${String(T).padStart(2,'0')}`;
+  initCharts(cur);
+  animateCounters(cur);
+}
+function next(){go(cur+1)}
+function prev(){go(cur-1)}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next()}
+  if(e.key==='ArrowLeft'){e.preventDefault();prev()}
+});
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50){dx<0?next():prev()}});
+let hintShown=true;
+document.addEventListener('keydown',()=>{if(hintShown){document.getElementById('kbdHint').style.opacity='0';hintShown=false}},{once:true});
+
+// ─── CHART TOGGLE (Slide 5) ───
+function toggleChart(mode){
+  document.querySelectorAll('#chartToggle .toggle-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('chartWrap1').style.display=mode==='tcv'?'block':'none';
+  document.getElementById('chartWrap2').style.display=mode==='scenarios'?'block':'none';
+  document.getElementById('npvHeatmapWrap').style.display=mode==='npv'?'block':'none';
+  if(mode==='scenarios'&&!CI.scen)initScenChart();
+  if(mode==='npv'){}// static table, no init needed
+}
+
+// ─── ANIMATED COUNTERS ───
+function animateCounters(slideIdx){
+  const slide=slides[slideIdx];
+  slide.querySelectorAll('.metric-val[data-count]').forEach(el=>{
+    const target=parseFloat(el.dataset.count);
+    const suffix=el.dataset.suffix||'';
+    const isInt=target===Math.floor(target)&&target>10;
+    let start=0;const duration=900;const startTime=performance.now();
+    function tick(now){
+      const elapsed=now-startTime;
+      const progress=Math.min(elapsed/duration,1);
+      const eased=1-Math.pow(1-progress,3);
+      const current=start+(target-start)*eased;
+      if(isInt)el.textContent=Math.round(current).toLocaleString('ru-RU')+suffix;
+      else el.textContent=current.toFixed(current<10?2:1).replace('.',',')+suffix;
+      if(progress<1)requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+// NPV heatmap is now static HTML
+
+// ─── CHARTS ───
+const CI={};
+const chartFont={family:"'DM Sans',sans-serif"};
+const gridColor='rgba(255,255,255,.04)';
+const tickColor='#6B7F9E';
+const commonScaleOpts={x:{ticks:{color:tickColor,font:{size:11,...chartFont}},grid:{color:gridColor}},y:{ticks:{color:tickColor,font:{size:11,...chartFont}},grid:{color:gridColor}}};
+const legendOpts={labels:{color:'#8B9FC0',font:{size:11,...chartFont},boxWidth:12,padding:12}};
+const ttOpts={backgroundColor:'rgba(6,14,31,.92)',titleFont:chartFont,bodyFont:chartFont,borderColor:'rgba(255,255,255,.08)',borderWidth:1};
+const labels10=['Г1','Г2','Г3','Г4','Г5','Г6','Г7','Г8','Г9','Г10'];
+
+function initScenChart(){
+  const ctx=document.getElementById('chartScenarios');if(!ctx)return;
+  CI.scen=new Chart(ctx,{type:'line',data:{labels:labels10,datasets:[
+    {label:'Оптимист.',data:[1.51,4.32,8.29,12.95,18.29,24.25,30.69,37.54,44.87,52.54],borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.05)',fill:true,tension:.35,borderWidth:1.5,pointRadius:2},
+    {label:'Базовый',data:[1.1,3.2,6.1,9.5,13.4,17.8,22.5,27.5,32.9,38.5],borderColor:'#2775E8',backgroundColor:'rgba(39,117,232,.05)',fill:true,tension:.35,borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#2775E8'},
+    {label:'Санкц. стресс',data:[.94,2.68,5.14,8.03,11.35,15.05,19.04,23.29,27.84,32.6],borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.03)',fill:true,tension:.35,borderWidth:1.5,pointRadius:2},
+    {label:'Пессимист.',data:[.77,2.21,4.24,6.62,9.35,12.39,15.68,19.18,22.93,26.85],borderColor:'#EF4444',backgroundColor:'rgba(239,68,68,.03)',fill:true,tension:.35,borderWidth:1.5,borderDash:[4,4],pointRadius:2}
+  ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:legendOpts,title:{display:true,text:'Кумулятивный TCV по сценариям (млрд руб.)',color:'#EDF2F7',font:{size:13,weight:500,...chartFont}},tooltip:{...ttOpts,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toFixed(1)+' млрд'}}},scales:{...commonScaleOpts,y:{...commonScaleOpts.y,ticks:{...commonScaleOpts.y.ticks,callback:v=>v+' млрд'}}}}});
+}
+
+function initCharts(idx){
+  const sn=idx+1;
+
+  if(sn===5&&!CI.tcv){
+    const ctx=document.getElementById('chartTCV');if(!ctx)return;
+    CI.tcv=new Chart(ctx,{type:'bar',data:{labels:labels10,datasets:[
+      {label:'TCV, млрд',data:[1.1,2.05,2.9,3.4,3.9,4.35,4.7,5.0,5.35,5.6],backgroundColor:'rgba(0,61,165,.65)',hoverBackgroundColor:'rgba(39,117,232,.85)',borderRadius:5,borderSkipped:false},
+      {label:'Cash-in, млрд',data:[.598,1.108,1.564,1.875,2.086,2.310,2.504,2.668,2.858,2.979],backgroundColor:'rgba(232,168,23,.6)',hoverBackgroundColor:'rgba(255,209,102,.85)',borderRadius:5,borderSkipped:false}
+    ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:legendOpts,title:{display:true,text:'TCV и Cash-in по годам (базовый, млрд руб.)',color:'#EDF2F7',font:{size:13,weight:500,...chartFont}},tooltip:{...ttOpts,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toFixed(2)+' млрд'}}},scales:{...commonScaleOpts,y:{...commonScaleOpts.y,ticks:{...commonScaleOpts.y.ticks,callback:v=>v+' млрд'}}}}});
+  }
+
+  if(sn===6&&!CI.fot){
+    const ctx=document.getElementById('chartFOT');if(!ctx)return;
+    CI.fot=new Chart(ctx,{type:'line',data:{labels:labels10,datasets:[
+      {label:'ФОТ итог. (100% KPI)',data:[139,203,394,429,467,551,600,654,712,776],borderColor:'#2775E8',backgroundColor:'rgba(39,117,232,.08)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#2775E8',borderWidth:2},
+      {label:'Хедж (0% KPI)',data:[112,122,158,172,187,220,240,262,285,311],borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.06)',fill:true,tension:.35,borderDash:[5,4],pointRadius:3,pointBackgroundColor:'#10B981',borderWidth:1.5},
+      {label:'Затраты (ФОТ+OPEX)',data:[168,232,425,462,501,587,638,694,754,820],borderColor:'#E8A817',backgroundColor:'rgba(232,168,23,.04)',fill:false,tension:.35,pointRadius:2,borderWidth:1.5,borderDash:[2,3]}
+    ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:legendOpts,title:{display:true,text:'ФОТ: план vs хедж + затраты (млн руб.)',color:'#EDF2F7',font:{size:13,weight:500,...chartFont}},tooltip:{...ttOpts,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y+' млн'}}},scales:{...commonScaleOpts,y:{...commonScaleOpts.y,ticks:{...commonScaleOpts.y.ticks,callback:v=>v+' млн'}}}}});
+  }
+
+  if(sn===7&&!CI.hedge){
+    const ctx=document.getElementById('chartHedge');if(!ctx)return;
+    CI.hedge=new Chart(ctx,{type:'bar',data:{labels:['0% KPI','50%','80%','100%','120%','150%','200%'],datasets:[
+      {label:'ФОТ итого Год 1, млн',data:[112,126,134,139,148,165,192],backgroundColor:['#EF4444','#F59E0B','#F59E0B','#2775E8','#10B981','#10B981','#E8A817'],borderRadius:8,borderSkipped:false}
+    ]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Бюджетный коридор: ФОТ Год 1 при разных KPI (млн руб.)',color:'#EDF2F7',font:{size:13,weight:500,...chartFont}},tooltip:{...ttOpts,callbacks:{label:c=>c.parsed.x+' млн руб.'}}},scales:{x:{ticks:{color:tickColor,font:{size:11,...chartFont},callback:v=>v+' млн'},grid:{color:gridColor}},y:{ticks:{color:tickColor,font:{size:11,...chartFont}},grid:{display:false}}}}});
+  }
+
+  if(sn===8&&!CI.road){
+    const ctx=document.getElementById('chartRoadmap');if(!ctx)return;
+    CI.road=new Chart(ctx,{type:'line',data:{labels:labels10,datasets:[
+      {label:'Кум. TCV',data:[1.1,3.2,6.1,9.5,13.4,17.8,22.5,27.5,32.9,38.5],borderColor:'#003DA5',backgroundColor:'rgba(0,61,165,.06)',fill:true,borderWidth:2.5,tension:.35,pointRadius:4,pointBackgroundColor:'#003DA5'},
+      {label:'Кум. Cash-in',data:[.6,1.7,3.3,5.1,7.2,9.5,12,14.7,17.6,20.6],borderColor:'#E8A817',backgroundColor:'rgba(232,168,23,.06)',fill:true,borderWidth:2,tension:.35,pointRadius:4,pointBackgroundColor:'#E8A817'},
+      {label:'Кум. затраты',data:[.168,.400,.825,1.287,1.789,2.376,3.014,3.708,4.462,5.282],borderColor:'#EF4444',borderWidth:1.5,borderDash:[4,4],tension:.35,pointRadius:3,pointBackgroundColor:'#EF4444',fill:false}
+    ]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:legendOpts,title:{display:true,text:'Кумулятивная динамика: TCV, Cash-in, затраты (млрд руб.)',color:'#EDF2F7',font:{size:13,weight:500,...chartFont}},tooltip:{...ttOpts,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toFixed(2)+' млрд'}}},scales:{...commonScaleOpts,y:{...commonScaleOpts.y,ticks:{...commonScaleOpts.y.ticks,callback:v=>v+' млрд'}}}}});
+  }
+}
+
+// ─── INIT ───
+document.getElementById('progress').style.width=(1/T*100)+'%';
+animateCounters(0);
+</script>
+</body>
+</html>
