@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЦПИКП — НИЯУ МИФИ</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0A1628;
+  --blue: #003DA5;
+  --blue-light: #1a5fc7;
+  --gold: #FFB81C;
+  --gold-dim: rgba(255,184,28,0.15);
+  --white: #F0F4F8;
+  --text: #CBD5E1;
+  --text-muted: #64748B;
+  --card-bg: rgba(15,25,50,0.6);
+  --accent-teal: #0EA5E9;
+  --green: #10B981;
+  --red: #EF4444;
+  --purple: #8B5CF6;
+  --pink: #EC4899;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ═══ NOISE TEXTURE ═══ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+/* ═══ REVEAL ANIMATIONS ═══ */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.15s; }
+.reveal-delay-2 { transition-delay: 0.3s; }
+.reveal-delay-3 { transition-delay: 0.45s; }
+.reveal-delay-4 { transition-delay: 0.6s; }
+.reveal-delay-5 { transition-delay: 0.75s; }
+
+/* ═══ HERO ═══ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -30%;
+  width: 80%; height: 150%;
+  background: radial-gradient(ellipse, rgba(0,61,165,0.15) 0%, transparent 70%);
+  animation: pulse 8s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%,100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-badge {
+  display: inline-block;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 span { color: var(--gold); }
+
+.hero-sub {
+  font-size: 1.15rem;
+  font-weight: 300;
+  color: var(--text);
+  max-width: 600px;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+/* ═══ METRICS BAR ═══ */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: rgba(0,61,165,0.3);
+  border: 1px solid rgba(0,61,165,0.4);
+  overflow: hidden;
+}
+
+.metric {
+  background: var(--card-bg);
+  padding: 1.5rem 0.8rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: background 0.3s;
+}
+
+.metric:hover { background: rgba(0,61,165,0.3); }
+
+.metric-value {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.2;
+}
+
+.metric-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ═══ SECTIONS ═══ */
+section { padding: 6rem 0; position: relative; }
+
+.section-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.section-desc { font-size: 1.05rem; color: var(--text); max-width: 700px; line-height: 1.7; margin-bottom: 3rem; }
+
+/* ═══ PROBLEM SECTION ═══ */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.big-stat {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
+  border: 1px solid rgba(0,61,165,0.5);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  position: sticky;
+  top: 2rem;
+}
+
+.big-stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.big-stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
+.big-stat-highlight { font-size: 1.1rem; font-weight: 700; color: var(--red); margin-top: 1rem; }
+
+.losses { display: flex; flex-direction: column; gap: 1rem; }
+
+.loss-item {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: 1.2rem 1.5rem;
+  background: var(--card-bg);
+  border-left: 3px solid var(--blue);
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.loss-item:hover { border-color: var(--gold); transform: translateX(4px); }
+
+.loss-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); min-width: 1.5rem; }
+.loss-title { font-weight: 700; color: #fff; font-size: 0.95rem; }
+.loss-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+.alert-box {
+  margin-top: 2rem;
+  padding: 1.5rem 2rem;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-left: 4px solid var(--red);
+}
+
+.alert-box strong { color: var(--red); }
+
+/* ═══ BENCHMARK ═══ */
+.bench-table { width: 100%; border-collapse: collapse; }
+.bench-table th { padding: 0.8rem 1rem; background: var(--blue); color: #fff; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; text-align: left; }
+.bench-table td { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(100,116,139,0.2); font-size: 0.9rem; }
+.bench-table tr:hover td { background: rgba(0,61,165,0.1); }
+.bench-table .mifi-row td { color: var(--red); font-weight: 700; background: rgba(239,68,68,0.06); }
+
+/* ═══ SOLUTION ═══ */
+.blocks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+
+.block-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  padding: 1.8rem;
+  border-top: 3px solid var(--blue);
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.block-card:hover { transform: translateY(-4px); }
+.block-card:nth-child(1) { border-color: var(--gold); }
+.block-card:nth-child(2) { border-color: var(--accent-teal); }
+.block-card:nth-child(3) { border-color: var(--green); }
+.block-card:nth-child(4) { border-color: var(--purple); }
+.block-card:nth-child(5) { border-color: #F59E0B; }
+.block-card:nth-child(6) { border-color: var(--pink); }
+
+.block-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem; }
+.block-name { font-weight: 700; color: #fff; font-size: 1.05rem; }
+.block-staff { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--gold); font-size: 1.1rem; }
+.block-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ═══ FINANCIALS ═══ */
+.fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+.fin-chart {
+  background: var(--card-bg);
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.fin-chart h3 { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.2rem; margin-bottom: 1.5rem; }
+
+.bar-chart { display: flex; align-items: flex-end; gap: 0.3rem; height: 200px; padding-top: 1rem; }
+
+.bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 0.3rem; }
+
+.bar {
+  width: 100%;
+  background: linear-gradient(to top, var(--blue), var(--blue-light));
+  border-radius: 2px 2px 0 0;
+  transition: height 1.5s ease;
+  min-height: 2px;
+  position: relative;
+}
+
+.bar::after {
+  content: attr(data-val);
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: var(--gold);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bar-label { font-size: 0.7rem; color: var(--text-muted); }
+
+.scenario-table { width: 100%; border-collapse: collapse; }
+.scenario-table th { padding: 0.7rem; background: rgba(0,61,165,0.3); color: var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+.scenario-table td { padding: 0.6rem; text-align: center; font-size: 0.9rem; border-bottom: 1px solid rgba(100,116,139,0.15); }
+.scenario-table .baseline td { color: var(--gold); font-weight: 700; background: rgba(255,184,28,0.05); }
+
+.ratio-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
+
+.ratio-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 2px solid var(--blue);
+  transition: border-color 0.3s;
+}
+
+.ratio-card:hover { border-color: var(--gold); }
+.ratio-val { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--gold); }
+.ratio-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+/* ═══ ROADMAP ═══ */
+.timeline { position: relative; padding-left: 3rem; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--blue), var(--gold), var(--green));
+}
+
+.phase {
+  position: relative;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-left: 3px solid var(--blue);
+}
+
+.phase:nth-child(2) { border-color: var(--accent-teal); }
+.phase:nth-child(3) { border-color: var(--green); }
+
+.phase::before {
+  content: '';
+  position: absolute;
+  left: -3.5rem;
+  top: 2.2rem;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 3px solid var(--navy);
+}
+
+.phase-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.phase-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #fff; }
+.phase-period { font-size: 0.85rem; color: var(--gold); font-weight: 600; }
+.phase-items { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.phase-item { font-size: 0.9rem; color: var(--text); padding: 0.3rem 0; padding-left: 1rem; border-left: 2px solid rgba(100,116,139,0.3); }
+
+/* ═══ REQUEST ═══ */
+.request-section {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
+  padding: 5rem 0;
+  margin-top: 4rem;
+}
+
+.request-items { display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0; }
+
+.req-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.2rem 1.8rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.req-item:hover { background: rgba(255,255,255,0.08); transform: translateX(4px); }
+
+.req-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 2.5rem;
+}
+
+.req-text { font-size: 1rem; color: #fff; }
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.result-card {
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,184,28,0.2);
+  text-align: center;
+}
+
+.result-val { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); }
+.result-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ═══ FOOTER ═══ */
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(100,116,139,0.2);
+}
+
+/* ═══ SCROLL INDICATOR ═══ */
+.scroll-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--gold));
+  z-index: 100;
+  transition: width 0.1s;
+}
+
+/* ═══ NAV ═══ */
+.nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 90;
+  background: rgba(10,22,40,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,61,165,0.2);
+  transform: translateY(-100%);
+  transition: transform 0.3s;
+}
+
+.nav.visible { transform: translateY(0); }
+.nav-logo { font-family: 'Playfair Display', serif; font-weight: 700; color: #fff; font-size: 1rem; }
+.nav-logo span { color: var(--gold); }
+
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+.nav-links a:hover { color: var(--gold); }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 900px) {
+  .metrics-bar { grid-template-columns: repeat(3, 1fr); }
+  .problem-grid { grid-template-columns: 1fr; }
+  .blocks-grid { grid-template-columns: 1fr 1fr; }
+  .fin-grid { grid-template-columns: 1fr; }
+  .ratio-grid { grid-template-columns: repeat(2, 1fr); }
+  .result-grid { grid-template-columns: 1fr; }
+  .phase-items { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .metrics-bar { grid-template-columns: repeat(2, 1fr); }
+  .blocks-grid { grid-template-columns: 1fr; }
+  .ratio-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-indicator" id="scrollIndicator"></div>
+
+<nav class="nav" id="nav">
+  <div class="nav-logo">НИЯУ МИФИ <span>| ЦПИКП</span></div>
+  <div class="nav-links">
+    <a href="#problem">Проблема</a>
+    <a href="#benchmark">Бенчмарк</a>
+    <a href="#solution">Решение</a>
+    <a href="#finance">Финансы</a>
+    <a href="#roadmap">Дорожная карта</a>
+    <a href="#request">Запрос</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge reveal">Executive Summary • Февраль 2026</div>
+      <h1 class="reveal reveal-delay-1">Создание Центра<br>привлечения инвестиций<br>и корпоративного<br>партнёрства <span>(ЦПИКП)</span></h1>
+      <p class="hero-sub reveal reveal-delay-2">Единая точка входа для бизнеса. ООО, 100% МИФИ.<br>Прямое подчинение ректору. KPI-вестинг. Инвестиционный фонд.</p>
+    </div>
+    <div class="metrics-bar reveal reveal-delay-3">
+      <div class="metric"><div class="metric-value" data-count="38.4">0</div><div class="metric-label">TCV 10 лет, млрд</div></div>
+      <div class="metric"><div class="metric-value" data-count="636" data-suffix="%">0</div><div class="metric-label">ROI (TCV)</div></div>
+      <div class="metric"><div class="metric-value" data-count="8.9">0</div><div class="metric-label">NPV (12%), млрд</div></div>
+      <div class="metric"><div class="metric-value">12–15</div><div class="metric-label">Break-even, мес.</div></div>
+      <div class="metric"><div class="metric-value">~162</div><div class="metric-label">Бюджет Г1, млн</div></div>
+      <div class="metric"><div class="metric-value">25→35</div><div class="metric-label">Штат, 3 фазы</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROBLEM ═══ -->
+<section id="problem">
+  <div class="container">
+    <div class="section-tag reveal">01 • Проблема</div>
+    <h2 class="section-title reveal">Фрагментация <span style="color:var(--red)">без координации</span></h2>
+    <p class="section-desc reveal">В структуре НИЯУ МИФИ — 508 подразделений. Из них лишь 8 работают с бизнесом — без координации между собой. Ни одна структура не способна обработать комплексный запрос корпорации.</p>
+
+    <div class="problem-grid">
+      <div class="big-stat reveal">
+        <div class="big-stat-number" data-count="508">0</div>
+        <div class="big-stat-label">подразделений МИФИ</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--gold);margin-top:1.5rem;">8</div>
+        <div class="big-stat-label">работают с бизнесом</div>
+        <div class="big-stat-highlight">0 координации</div>
+      </div>
+      <div class="losses">
+        <div class="loss-item reveal"><div class="loss-num">1</div><div><div class="loss-title">Заказы на НИОКР</div><div class="loss-desc">Время обработки 2–4 недели вместо 2 дней (стандарт). Частные компании размещают заказы у конкурентов.</div></div></div>
+        <div class="loss-item reveal reveal-delay-1"><div class="loss-num">2</div><div><div class="loss-title">Инвестиции в разработки</div><div class="loss-desc">Функция формирования инвест. паспортов не покрыта ни одним подразделением. ETH Zurich: 425 млн CHF (2024).</div></div></div>
+        <div class="loss-item reveal reveal-delay-2"><div class="loss-num">3</div><div><div class="loss-title">Корпоративное ДПО</div><div class="loss-desc">IT-компании (Яндекс, Сбер, VK) тратят миллиарды на обучение. МИФИ не имеет B2B-координатора.</div></div></div>
+        <div class="loss-item reveal reveal-delay-3"><div class="loss-num">4</div><div><div class="loss-title">Корпоративный фандрайзинг</div><div class="loss-desc">Потенциал корпоративных пожертвований и партнёрских целевых капиталов не реализован.</div></div></div>
+        <div class="loss-item reveal reveal-delay-4"><div class="loss-num">5</div><div><div class="loss-title">Key Account Management</div><div class="loss-desc">Нет персональных координаторов для стратегических партнёров, включая Росатом.</div></div></div>
+      </div>
+    </div>
+    <div class="alert-box reveal">
+      <strong>Конкуренты уже действуют:</strong> МФТИ (Физтех-парк, 150+ спин-оффов), Сколтех (Центр инноваций), НИУ ВШЭ (эндаумент >4 млрд руб.) — системно забирают заказы, инвестиции и партнёров.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BENCHMARK ═══ -->
+<section id="benchmark">
+  <div class="container">
+    <div class="section-tag reveal">02 • Бенчмарк</div>
+    <h2 class="section-title reveal">8 из 8 ведущих вузов<br>имеют аналогичную структуру</h2>
+    <div class="reveal">
+      <table class="bench-table">
+        <tr><th>Университет</th><th>Структура</th><th>Результат</th><th>Аналогия</th></tr>
+        <tr><td>MIT</td><td>ILP + The Engine ($400M AUM)</td><td>>$1 млрд/год, >700 партнёров</td><td>ООО → Фонд</td></tr>
+        <tr><td>Stanford</td><td>OTL (лицензирование)</td><td>>$100 млн/год</td><td>IP-блок ЦПИКП</td></tr>
+        <tr><td>ETH Zurich</td><td>ETH Transfer + спин-оффы</td><td>>600 спин-оффов за 20 лет</td><td>Техн. вуз, ядерная тема</td></tr>
+        <tr><td>Imperial</td><td>Enterprise Division</td><td>>£200 млн/год</td><td>Дочернее ООО</td></tr>
+        <tr><td>НИУ ВШЭ</td><td>Дирекция + ФЦК (>4 млрд)</td><td>>1,77 млрд эндаумент</td><td>Российский лидер</td></tr>
+        <tr><td>МФТИ</td><td>Физтех-парк + АНО ФР</td><td>150+ спин-оффов</td><td>Конкурент</td></tr>
+        <tr><td>Сколтех</td><td>Центр инд. инноваций</td><td>100+ партнёров</td><td>Конкурент</td></tr>
+        <tr class="mifi-row"><td>МИФИ</td><td>Нет координирующей структуры</td><td>0</td><td>Аномалия</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOLUTION ═══ -->
+<section id="solution">
+  <div class="container">
+    <div class="section-tag reveal">03 • Решение</div>
+    <h2 class="section-title reveal">ЦПИКП: <span style="color:var(--gold)">ООО, 100% МИФИ</span></h2>
+    <p class="section-desc reveal">Единая точка входа для бизнеса с прямым подчинением ректору. KPI-вестинг, инвестиционный фонд 2/20, участие в спин-оффах. Запуск за 3–6 месяцев.</p>
+
+    <div class="blocks-grid">
+      <div class="block-card reveal"><div class="block-header"><span class="block-name">Руководство</span><span class="block-staff">3</span></div><div class="block-desc">Директор (G1) + два заместителя (G2). Стратегия, ректорат, Росатом</div></div>
+      <div class="block-card reveal reveal-delay-1"><div class="block-header"><span class="block-name">Инвестиции</span><span class="block-staff">5</span></div><div class="block-desc">Инвест. паспорта, привлечение венчурного и частного капитала, фонд 2/20</div></div>
+      <div class="block-card reveal reveal-delay-2"><div class="block-header"><span class="block-name">Фронт-офис</span><span class="block-staff">5</span></div><div class="block-desc">Единая точка входа, квалификация запросов, маршрутизация в подразделения</div></div>
+      <div class="block-card reveal reveal-delay-3"><div class="block-header"><span class="block-name">KAM-партнёрства</span><span class="block-staff">6</span></div><div class="block-desc">Персональные координаторы стратегических партнёров. Категория S — Росатом</div></div>
+      <div class="block-card reveal reveal-delay-4"><div class="block-header"><span class="block-name">Аналитика / CRM</span><span class="block-staff">4</span></div><div class="block-desc">CRM-система, BI-аналитика, веб-портал, дашборды для ректората</div></div>
+      <div class="block-card reveal reveal-delay-5"><div class="block-header"><span class="block-name">Юридический</span><span class="block-staff">2</span></div><div class="block-desc">Сопровождение сделок, IP, лицензирование, корпоративное право</div></div>
+    </div>
+    <p class="reveal" style="text-align:center;margin-top:2rem;color:var(--gold);font-weight:600;">ИТОГО Фаза 1: 25 чел.  →  Фаза 2 (Год 3): 32  →  Фаза 3 (Год 6): 35</p>
+  </div>
+</section>
+
+<!-- ═══ FINANCIALS ═══ -->
+<section id="finance">
+  <div class="container">
+    <div class="section-tag reveal">04 • Финансы</div>
+    <h2 class="section-title reveal">Финансовое обоснование<br><span style="color:var(--gold)">10 лет, 4 сценария</span></h2>
+
+    <div class="fin-grid">
+      <div class="fin-chart reveal">
+        <h3>TCV по годам (базовый), млн руб.</h3>
+        <div class="bar-chart" id="tcvChart">
+          <div class="bar-col"><div class="bar" data-h="20" data-val="1 100"></div><div class="bar-label">Г1</div></div>
+          <div class="bar-col"><div class="bar" data-h="37" data-val="2 050"></div><div class="bar-label">Г2</div></div>
+          <div class="bar-col"><div class="bar" data-h="52" data-val="2 900"></div><div class="bar-label">Г3</div></div>
+          <div class="bar-col"><div class="bar" data-h="61" data-val="3 400"></div><div class="bar-label">Г4</div></div>
+          <div class="bar-col"><div class="bar" data-h="70" data-val="3 900"></div><div class="bar-label">Г5</div></div>
+          <div class="bar-col"><div class="bar" data-h="75" data-val="4 200"></div><div class="bar-label">Г6</div></div>
+          <div class="bar-col"><div class="bar" data-h="80" data-val="4 500"></div><div class="bar-label">Г7</div></div>
+          <div class="bar-col"><div class="bar" data-h="86" data-val="4 800"></div><div class="bar-label">Г8</div></div>
+          <div class="bar-col"><div class="bar" data-h="93" data-val="5 200"></div><div class="bar-label">Г9</div></div>
+          <div class="bar-col"><div class="bar" data-h="100" data-val="5 600"></div><div class="bar-label">Г10</div></div>
+        </div>
+      </div>
+      <div class="fin-chart reveal reveal-delay-1">
+        <h3>Четыре сценария прогноза</h3>
+        <table class="scenario-table">
+          <tr><th>Сценарий</th><th>TCV 10л</th><th>Cash-in</th><th>NPV</th></tr>
+          <tr><td>Пессимистичный</td><td>26,9</td><td>16,2</td><td>4,6</td></tr>
+          <tr class="baseline"><td>Базовый</td><td>38,8</td><td>23,3</td><td>8,9</td></tr>
+          <tr><td>Оптимистичный</td><td>53,1</td><td>32,0</td><td>14,2</td></tr>
+          <tr><td>Санкц. стресс</td><td>32,9</td><td>19,8</td><td>6,8</td></tr>
+        </table>
+        <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.8rem;text-align:center;">Все значения — млрд руб. NPV при r=12%</p>
+      </div>
+    </div>
+
+    <div class="ratio-grid">
+      <div class="ratio-card reveal"><div class="ratio-val">7,4x</div><div class="ratio-label">Мультипликатор TCV</div></div>
+      <div class="ratio-card reveal reveal-delay-1"><div class="ratio-val" data-count="636" data-suffix="%">0</div><div class="ratio-label">ROI кумулятивный</div></div>
+      <div class="ratio-card reveal reveal-delay-2"><div class="ratio-val">5,0</div><div class="ratio-label">Кумулятив Г1+2, млрд</div></div>
+      <div class="ratio-card reveal reveal-delay-3"><div class="ratio-val">5,21</div><div class="ratio-label">Затраты 10 лет, млрд</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ROADMAP ═══ -->
+<section id="roadmap">
+  <div class="container">
+    <div class="section-tag reveal">05 • Дорожная карта</div>
+    <h2 class="section-title reveal">10 лет в 3 фазах</h2>
+
+    <div class="timeline">
+      <div class="phase reveal">
+        <div class="phase-header"><span class="phase-name">Фаза 1: Запуск</span><span class="phase-period">Мес. 1–24  |  25 чел.</span></div>
+        <div class="phase-items">
+          <div class="phase-item">Волны 1–3 набора персонала</div>
+          <div class="phase-item">CRM-система + веб-портал</div>
+          <div class="phase-item">TCV >1,1 млрд (Год 1)</div>
+          <div class="phase-item">Proof of concept, ROI >150%</div>
+        </div>
+      </div>
+      <div class="phase reveal">
+        <div class="phase-header"><span class="phase-name">Фаза 2: Масштабирование</span><span class="phase-period">Год 3–5  |  32 чел.</span></div>
+        <div class="phase-items">
+          <div class="phase-item">Волна 4 (+7 чел.): KAM Росатом, ДПО, гранты</div>
+          <div class="phase-item">Инвестиционные инструменты</div>
+          <div class="phase-item">TCV >3,9 млрд (Год 5)</div>
+          <div class="phase-item">Решение об интеграции (T2)</div>
+        </div>
+      </div>
+      <div class="phase reveal">
+        <div class="phase-header"><span class="phase-name">Фаза 3: Зрелость</span><span class="phase-period">Год 6–10  |  35 чел.</span></div>
+        <div class="phase-items">
+          <div class="phase-item">Инвестиционный фонд 2/20</div>
+          <div class="phase-item">Спин-оффы на базе разработок МИФИ</div>
+          <div class="phase-item">TCV >5,6 млрд (Год 10)</div>
+          <div class="phase-item">ЦПИКП → Инвест. фонд МИФИ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ REQUEST ═══ -->
+<section class="request-section" id="request">
+  <div class="container">
+    <div class="section-tag reveal" style="color:rgba(255,184,28,0.7);">06 • Запрос</div>
+    <h2 class="section-title reveal">Запрос к ректору</h2>
+    <p class="section-desc reveal" style="color:rgba(255,255,255,0.7);">На основании аналитической записки (27 стр.) рекомендуется:</p>
+
+    <div class="request-items">
+      <div class="req-item reveal"><span class="req-num">1.</span><span class="req-text">Создать ООО «ЦПИКП» со 100% участием НИЯУ МИФИ</span></div>
+      <div class="req-item reveal reveal-delay-1"><span class="req-num">2.</span><span class="req-text">Назначить директора ЦПИКП с прямым подчинением ректору</span></div>
+      <div class="req-item reveal reveal-delay-2"><span class="req-num">3.</span><span class="req-text">Утвердить штат (25 чел.) и бюджет Года 1: ~162 млн руб. (хедж 134 млн при 0% KPI)</span></div>
+      <div class="req-item reveal reveal-delay-3"><span class="req-num">4.</span><span class="req-text">Утвердить KPI-вестинг (80/20 → 60/40 → 40/60) и грейдовую модель</span></div>
+      <div class="req-item reveal reveal-delay-4"><span class="req-num">5.</span><span class="req-text">Установить контрольную точку T1 (мес. 6) для первого отчёта</span></div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-card reveal"><div class="result-val">1 100</div><div class="result-label">TCV Год 1, млн руб.</div></div>
+      <div class="result-card reveal reveal-delay-1"><div class="result-val">12–15</div><div class="result-label">Break-even, месяцев</div></div>
+      <div class="result-card reveal reveal-delay-2"><div class="result-val">636%</div><div class="result-label">ROI 10 лет (TCV)</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">НИЯУ МИФИ • ЦПИКП • Февраль 2026 • Конфиденциально</div>
+</footer>
+
+<script>
+// ═══ SCROLL REVEAL ═══
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ═══ COUNTER ANIMATION ═══
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.animated) {
+      e.target.dataset.animated = '1';
+      const target = parseFloat(e.target.dataset.count);
+      const suffix = e.target.dataset.suffix || '';
+      const isInt = Number.isInteger(target);
+      const duration = 2000;
+      const start = performance.now();
+      
+      function animate(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = target * eased;
+        e.target.textContent = (isInt ? Math.round(current) : current.toFixed(1)) + suffix;
+        if (progress < 1) requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
+
+// ═══ BAR CHART ANIMATION ═══
+const barObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.animated) {
+      e.target.dataset.animated = '1';
+      e.target.querySelectorAll('.bar').forEach((bar, i) => {
+        setTimeout(() => {
+          bar.style.height = bar.dataset.h + '%';
+        }, i * 100);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.bar-chart').forEach(el => barObs.observe(el));
+
+// ═══ SCROLL INDICATOR ═══
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('scrollIndicator').style.width = pct + '%';
+  document.getElementById('nav').classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+</body>
+</html>
